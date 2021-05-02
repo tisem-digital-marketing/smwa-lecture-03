@@ -35,12 +35,153 @@ class: clear, middle, font150
 ---
 class: inverse, center, middle
 
-# Section XX
+# Casuality
 
 ---
-# Slide Title 
+# Why Causality?
 
-course content here
+* Many questions we want answers to are **causal**
+
+* When we talk about marketing, we often want to know why something happens 
+  * Did demand/revenue/... change because of <something> ?
+  * And by how much?
+
+* We also care about non-casual questions (prediction, descriptive evidence)
+  * But our comparative advantage should be causality
+
+---
+# Why Causality as a Marketing Analyst?
+
+* Causality should be a marketing analyst's **comparative advantage**
+  * Plenty of fields do statistics, many probably do it better
+  * Few fields worry about causality and the *why* questions the way we (should) do
+
+* We can design more effective marketing strategies if we can identify causal effects
+  * Which will generate a boost in KPIs
+
+* **Skill to acquire**: Understanding when to make causal claims and when not 
+  * Your value to a future employer sky rockets if you can do this well
+
+---
+# What is Causality?
+
+$X$ causes $Y$ if ...
+
+* We intervene and change $X$ and nothing else
+* Then $Y$ changes as a result
+
+---
+# Examples of Causal Relationships 
+
+Obvious:
+
+* Turning on a light switch causes a light to be on
+* Fireworks raise the noise level
+
+Not so obvious:
+
+* TV Advertising increases product demand
+* Tweets about movies increase demand for it at theatres
+
+Remark: The **size** these effects are **much smaller** than you probably think
+
+---
+# Examples of Non-Causal Relationships 
+
+
+Obvious:
+
+* Number of people wearing shorts at the beach and icecream consumption
+* Roosters crowing followed by sunrise
+
+Some not so obvious:
+
+* School vending machines and obesity
+* Search engine advertising and revenue (in the short term!)
+
+---
+# Correlation is not Causation
+
+```{r, echo = FALSE, fig.align = "center"}
+knitr::include_graphics("https://824vvlju22v1lbk2lqvut2u-wpengine.netdna-ssl.com/wp-content/uploads/2019/03/Causation-vs-Correlation-1.png")
+```
+
+---
+# Why Correlation is not Causation
+
+(Some) possible reasons **A** might not cause **B**:
+
+* **The opposite is true**
+  * **B** actually causes **A**
+* The two are correlated, but **there's more to it**: 
+  * **A** and **B** are correlated, but they're actually caused by **C**
+* There's **another variable involved**: 
+  * **A** does cause **B** as long as **D** happens
+* There is a **"chain" reaction**: 
+  * A causes **E**, which leads **E** to cause **B** 
+  * ... but you only saw that **A** causes **B** from your own eyes
+* It's due to **chance**
+
+---
+# The Difficulty of Causal Inference
+
+**Can we tell when correlation $\implies$ causation?** 
+
+* Answer 1: It's *hard*
+* Answer 2: It is possible, but we *need assumptions*
+
+What kind of assumptions?
+
+* "What would have beens" - i.e. (approximate) counterfactual outcomes
+* "As good as random" - i.e. no selection on unobservables 
+  * Known as "conditional independence"
+  * Intuition: Given some control variables, differences in variable we care about are only due to randomness
+    * No unobserved factors driving variation in variable of interest 
+
+Even then: 
+
+* At *best* we'll estimate an **average causal effect**
+
+---
+# Regression and Causality
+
+.center[Regression assumptions on their own] 
+
+$$
+\neq \quad \text{ causal interpretations of } \beta
+$$
+
+* **Regression assumptions**: Unbiasedness, Variance of estimates 
+* "**Marketing Analytics assumptions**": Can an unbiased estimate be intrepreted causally
+  1. Valid counterfactual outcomes
+  2. Conditional independence 
+
+Note: Cannot test these assumptions 'statistically'
+
+---
+# Experiments in Marketing Analytics
+
+Recent trend: use 'experiments' to estimate causal effects 
+
+* Why? Clear counterfactual outcomes, reasonable to assume conditional independence
+
+Experiments in Marketing!? 
+
+Yes. Two kinds ...
+
+* Randomized Control Trial (RCT)
+  * Researcher randomly assigns observational units to treatment group, control group 
+* Natural Experiments / Quasi-Experiments
+  * "Nature" divides population into treatment and control in a way that is "as good as random"
+
+Both approaches: Compare changes over time between groups
+
+* How? ... that's what is coming next
+
+---
+class: inverse, center, middle
+
+# Difference in Differences
 
 ---
 # License & Citation
