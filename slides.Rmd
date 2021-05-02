@@ -20,6 +20,19 @@ class: font200
 TBD
 
 ---
+class: clear, middle, font150
+# Some Advice
+
+**Advice**: Take some time this week to take care of your *health*
+
+* Do as I say, not as I do 
+* I'm not so great at this myself ...
+* (it's one of my biggest flaws)
+
+.footnote[*health* = physical, mental, and spiritual.]
+
+
+---
 class: inverse, center, middle
 
 # Section XX
