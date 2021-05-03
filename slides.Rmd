@@ -231,6 +231,7 @@ class: inverse, center, middle
 # Difference in Differences
 
 ---
+class: font140
 # What is Difference in Differences?
 
 Want to answer the following question:
@@ -290,6 +291,7 @@ ggdag_classic(dag,node_size=10) +
 ```
 
 ---
+class: font160
 # Estimator I: Before vs After?
 
 Can't we control for time via (say) regression!?
@@ -332,39 +334,46 @@ $\implies$ Difference between them could be due to:
 $\implies$ Estimator won't work 
 
 ---
+class: font160
 # Difference in Differences 
 
 * Previous estimators: one difference (one minus sign)
-  * They don't work
+  * **They don't work**
 
 Why? 
 
-* Estimator I: time differences 
-* Estimator II: group differences 
+* Estimator I: confounded by time differences 
+* Estimator II: confounded by group differences 
 
-What if we could combine ideas from both?
+**What if we could combine ideas from both?**
 
 $\implies$ that is what difference in differences does
 
 Cool! How?
 
 ---
+class: font120
 # Difference in Differences: Notation 
 
-Assumption: The effect of time is constant between treated and control groups
+**Assumption**: The effect of time is constant between treated and control groups
 
 We need four averages:
 
-1. Control group, before intervention starts, $\bar{y}_{\text{before}}^{\text{control}} = \beta_0$
-2. Control group, after intervention starts, $\bar{y}_{\text{after}}^{\text{control}} = \beta_0 + \beta_1$
-3. Treatment group, before intervention starts, $\bar{y}_{\text{before}}^{\text{treatment}} = \beta_0 + \beta_2$
-4. Treatment group, after intervention starts, $\bar{y}_{\text{after}}^{\text{treatment}} = \beta_0 + \beta_2 + \beta_1 + \delta$
+1. Control group, before intervention starts
+$$\bar{y}_{\text{before}}^{\text{control}} = \beta_0$$
+2. Control group, after intervention starts
+$$\bar{y}_{\text{after}}^{\text{control}} = \beta_0 + \beta_1$$
+3. Treatment group, before intervention starts
+$$\bar{y}_{\text{before}}^{\text{treatment}} = \beta_0 + \beta_2$$
+4. Treatment group, after intervention starts 
+$$\bar{y}_{\text{after}}^{\text{treatment}} = \beta_0 + \beta_2 + \beta_1 + \delta$$
 
 $\implies$ the (average) treatment effect is $\delta$
 
 This looks easier in a table...
 
 ---
+class: font180
 # The Difference in Difference Table
 
 |                     | Before | After |
@@ -375,6 +384,7 @@ This looks easier in a table...
 
 
 ---
+class: font160
 # The Difference in Difference Table
 
 |                     | Before | After | After - Before |
@@ -386,6 +396,7 @@ This looks easier in a table...
 'Double Differencing' $\implies$ estimate $\delta$
 
 ---
+class: font160
 # The Difference in Difference Table
 
 |                     | Before | After | After - Before |
@@ -400,7 +411,7 @@ This looks easier in a table...
 ---
 # Difference in Difference Graphically
 
-```{r, echo = FALSE, out.height = '200%', fig.align = 'center'}
+```{r, echo = FALSE, out.width = '200%', fig.align = 'center'}
 # initialize plot and add control group
 plot(c(0, 1), c(6, 8), 
      type = "p",
@@ -464,6 +475,7 @@ diddata <- tibble(year = sample(2002:2010,10000,replace=T),
 ```
 
 ---
+class: font140
 # Difference in Difference in R 
 
 Now, compute averages by group and treatment status
@@ -479,9 +491,10 @@ print(means)
 ```
 
 ---
+class: font140
 # Difference in Difference in R 
 
-As a 'Table'
+As a 'table'
 
 ```{r, echo = TRUE}
 did_table <- 
@@ -493,9 +506,10 @@ print(did_table)
 ```
 
 ---
+class: font140
 # Difference in Difference in R 
 
-Compute Treatment Effect, \hat{$\delta$}
+Compute Treatment Effect, $\hat{\delta}$
 
 ```{r, echo = TRUE}
 #Before-after difference for untreated, has time effect only
@@ -504,23 +518,26 @@ bef_aft_untreated <- filter(means,group=='UntreatedGroup',after==1)$Y -
 #Before-after for treated, has time and treatment effect
 bef_aft_treated <- filter(means,group=='TreatedGroup',after==1)$Y - 
                    filter(means,group=='TreatedGroup',after==0)$Y
-#Difference-in-Difference! Take the Time + Treatment effect, and remove the Time effect
+#Difference-in-Difference! Take the Time + Treatment effect, 
+#                          and remove the Time effect
 did <- bef_aft_treated - bef_aft_untreated
+
 print(paste("Diff in Diff Estimate: ", did))
 ```
 
 ---
+class: font160
 # Is Our Estimate Causal
 
-We need two assumptions for Causality:
+We need **two assumptions** for causality:
 
-1. A valid counterfactual outcome to compare treated group to 
+1. A **valid counterfactual outcome** to compare treated group to 
   * The control group gives us this
 
-2. Conditional Independence: treatment assignment "as good as random"
+2. **Conditional Independence**: treatment assignment "as good as random"
   * We randomly assigned the treatment to some observations 
 
-$\implies$ Difference in difference can give is causal estimates of the average treatment effect!
+$\implies$ **Difference in difference can give is causal estimates of the average treatment effect!**
 
 ---
 class: inverse, center, middle
@@ -528,17 +545,19 @@ class: inverse, center, middle
 # Difference in Differences as a Regression
 
 ---
-# Difference in Differences as a Regression
+class: font150
+# DiD as a Regression
 
 $$y_{it} = \beta_0 + \beta_1 After_t + \beta_2Treated_i + \delta After_t \times Treated_i + \varepsilon_{it}$$
 
 where:
 
 * $After_t$ = 1 in the period after treatment occurs, zero otherwise
-* $Treated_i$ = 1 if the individual is treated, zero otherwise
+* $Treated_i$ = 1 if the individual is ever treated, zero otherwise
 
 ---
-# Difference in Differences as a Regression
+class: font150
+# DiD as a Regression
 
 $$y_{it} = \beta_0 + \beta_1 After_t + \beta_2Treated_i + \delta After_t \times Treated_i + \varepsilon_{it}$$
 
@@ -555,7 +574,8 @@ $$y_{it} = \beta_0 + \beta_1 After_t + \beta_2Treated_i + \delta After_t \times 
 Let's see that in action with `R`
 
 ---
-# Difference in Differences as a Regression
+class: font130
+# DiD as a Regression
 
 ```{r, echo = TRUE}
 reg_did <- lm(Y ~ after*treatment, data = diddata)
@@ -564,17 +584,18 @@ tidy(reg_did, conf.int = TRUE)
 ```
 
 ---
+class: font140
 # Advantages of Regression Approach 
 
-1. Get standard error of the estimate
+1. **Get standard error of the estimate**
   * Assess whether effect is statistically significant 
   * *Should cluster standard errors*
   * (see this week's reading for suggestions on how)
-2. Can add extra control variables into the regression 
+2. **Can add extra control variables into the regression** 
   * Either as 'usual' controls and/or as fixed effects
   * Particularly useful for Natural / Quasi Experiments 
   * (see this week's reading)
-3. Can use $log(y)$ as dependent variable
+3. **Can use $log(y)$ as dependent variable**
   * $\rightarrow$ $\hat{\delta}$ is the percentage change in y due to the treatment
 
 ---
@@ -583,6 +604,7 @@ class: inverse, center, middle
 # Hidden Assumptions, Caveats, etc 
 
 ---
+class: font160
 # Hidden-ish Assumption: Parallel Trends
 
 I briefly mentioned this in passing...
@@ -596,37 +618,42 @@ This is called the **parallel trends** assumption
 * Again, *if the Treatment hadn't happened to anyone*, the differences between the treatment and control would stay the same
 
 ---
+class: font160
 # Checking for Parallel Trends
 
 Like many assumptions - its **untestable**
 
-* Though we can 'check' whether patterns in the data are suggestive its OK 
-* Heres on way: 
+* Though we can **'check' whether patterns in the data are suggestive its OK** 
+* Heres one way: 
   * Are *prior trends* are the same for Treated and Control groups
+  * Generally, compute average of outcome by group over time
   * (needs multiple pre-treatment periods) 
   * Was the gap changing a lot during that period? If not, suggestive we're OK
 
 ---
+class: font160
 # "As good as random" Redux
 
 Remember our two assumptions for causality:
 
-1. Valid counterfactual outcomes
+1. **Valid counterfactual outcomes**
   * Control Group solves this one for us
-2. Conditional independence: nothing unobserved is causing selection into treament group 
+2. **Conditional independence**: nothing unobserved is causing selection into treament group 
   * Tricker ... 
   * Randomized Control Trial $\rightarrow$ You're more than likely gonna be OK
   * Natural / Quasi Experiment - have you got a credible proxy for random assignment?
     * Profession's thoughts: Large, visible, unexpected shocks
 
 ---
+class: font170
 # Threats to Validity
 
-Internal Validity: statistical inference made about causal effects are valid for the considered population
+**Internal Validity**: statistical inference made about causal effects are valid for the considered population
 
-External Validity:  inferences and conclusion are valid for the study's population and can be generalized to other populations and settings
+**External Validity**:  inferences and conclusion are valid for the study's population and can be generalized to other populations and settings
 
 ---
+class: font160
 # Threats to Internal Validity
 
 * **Failure to Randomize**
@@ -636,6 +663,7 @@ External Validity:  inferences and conclusion are valid for the study's populati
 * **Small Sample Sizes**
 
 ---
+class: font160
 # Threats to External Validity
 
 * **Non-representative sample**
@@ -643,6 +671,7 @@ External Validity:  inferences and conclusion are valid for the study's populati
 * **General Equiilibrium Effects**
 
 ---
+class: font140
 # A Warning!
 
 - DiD's popularity is relatively recent, so we're still learning a lot about it!
@@ -662,6 +691,7 @@ class: inverse, center, middle
 # Recap
 
 ---
+class: font160
 # Recap 
 
 * Many marketing questions require causal answers 
@@ -670,6 +700,7 @@ class: inverse, center, middle
 * Can use Difference in Difference to estimate causal effects of above experiments
 
 ---
+class: font160
 # Acknowledgements
 
 Material in this set of slides borrows from the great work of others:
@@ -681,11 +712,12 @@ Material in this set of slides borrows from the great work of others:
 * Goldfarb & Tucker's [Conducting Research with Quasi-Experiments: A Guide for Marketers](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2420920)
 
 ---
+class: font90
 # License & Citation
 
 Suggested Citation:
 
-```{r, engine='out', eval = FALSE}
+```{r, engine='out', eval = FALSE, echo = TRUE}
 @misc{smwa_2021_lecture03,
       title={"Social Media and Web Analytics: Causality & Difference in Differences"},
       author={Lachlan Deer},
