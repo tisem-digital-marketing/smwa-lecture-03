@@ -16,6 +16,7 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE) 
+options(scipen=999)
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 6)
 library(tidyverse)
 #library(estimatr)
@@ -395,6 +396,8 @@ class: font160
 
 'Double Differencing' $\implies$ estimate $\delta$
 
+I call this DiD estimate using averages **simple DiD**
+
 ---
 class: font160
 # The Difference in Difference Table
@@ -407,6 +410,8 @@ class: font160
 
 
 'Double Differencing' $\implies$ estimate $\delta$
+
+I call this DiD estimate using averages **simple DiD**
 
 ---
 # Difference in Difference Graphically
