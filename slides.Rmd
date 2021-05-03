@@ -74,7 +74,7 @@ class: clear, middle, font150
 ---
 class: inverse, center, middle
 
-# Casuality
+# Causality
 
 ---
 class: font160
@@ -86,7 +86,7 @@ class: font160
   * Did demand/revenue/... change because of <something> ?
   * And by how much?
 
-* We also care about non-casual questions (prediction, descriptive evidence)
+* We also care about non-causal questions (prediction, descriptive evidence)
   * But our comparative advantage should be causality
 
 ---
@@ -135,7 +135,7 @@ class: font160
 
 Obvious:
 
-* Number of people wearing shorts at the beach and icecream consumption
+* Number of people wearing shorts at the beach and ice cream consumption
 * Roosters crowing followed by sunrise
 
 Some not so obvious:
@@ -199,7 +199,7 @@ $$
 $$
 
 * **Regression assumptions**: Unbiasedness, Variance of estimates 
-* "**Causal Inference assumptions**": Can an unbiased estimate be intrepreted causally
+* "**Causal Inference assumptions**": Can an unbiased estimate be interpreted causally
   1. Valid counterfactual outcomes
   2. Conditional independence 
 
@@ -217,7 +217,7 @@ Experiments in Marketing!?
 
 Yes. Two kinds ...
 
-* **Randomized Control Trial (RCT)**
+* **Randomised Control Trial (RCT)**
   * Researcher randomly assigns observational units to treatment group, control group 
 * **Natural Experiments / Quasi-Experiments**
   * "Nature" divides population into treatment and control in a way that is "as good as random"
@@ -298,7 +298,7 @@ class: font160
 Can't we control for time via (say) regression!?
 
 * **No**
-  * **treatment** occurence and **time** are perfectly correlated
+  * **treatment** occurrence and **time** are perfectly correlated
 
 * Observation is either:
   * Before and Untreated, or 
@@ -629,7 +629,7 @@ class: font160
 Like many assumptions - its **untestable**
 
 * Though we can **'check' whether patterns in the data are suggestive its OK** 
-* Heres one way: 
+* Here's one way: 
   * Are *prior trends* are the same for Treated and Control groups
   * Generally, compute average of outcome by group over time
   * (needs multiple pre-treatment periods) 
@@ -644,8 +644,8 @@ Remember our two assumptions for causality:
 1. **Valid counterfactual outcomes**
   * Control Group solves this one for us
 2. **Conditional independence**: nothing unobserved is causing selection into treament group 
-  * Tricker ... 
-  * Randomized Control Trial $\rightarrow$ You're more than likely gonna be OK
+  * Trickier ... 
+  * Randomised Control Trial $\rightarrow$ You're more than likely gonna be OK
   * Natural / Quasi Experiment - have you got a credible proxy for random assignment?
     * Profession's thoughts: Large, visible, unexpected shocks
 
@@ -661,7 +661,7 @@ class: font170
 class: font160
 # Threats to Internal Validity
 
-* **Failure to Randomize**
+* **Failure to Randomise**
 * **Failure to Follow Treatment Protocol**
 * **Attrition**
 * **Experimenter Demand Effects**
@@ -673,21 +673,21 @@ class: font160
 
 * **Non-representative sample**
 * **Non-representative Marketing Intervention / Policy**
-* **General Equiilibrium Effects**
+* **General Equilibrium Effects**
 
 ---
 class: font140
 # A Warning!
 
 - DiD's popularity is relatively recent, so we're still learning a lot about it!
-  - Most relevant has to do with **staggered rollout DiD**
+  - Most relevant has to do with **staggered roll out DiD**
 - The regression version of DiD doesn't *necessarily* need to have treatment applied at *one* particular time
   - Treatment could be gradually implemented over time
 - Nothing we've explicitly said would prevent us from using the regression DiD right!?
   - Well... that's what we thought for a long time. 
   - And you'll see many of published studies doing this. 
   - BUT it turns out to actually **bias results by quite a lot**
-- There are more complex, newer estimators for staggered rollout case, 
+- There are more complex, newer estimators for staggered roll out case, 
   - Too much for this class
 
 ---
