@@ -565,6 +565,8 @@ tidy(reg_did, conf.int = TRUE)
   * Either as 'usual' controls and/or as fixed effects
   * Particularly useful for Natural / Quasi Experiments 
   * (see this week's reading)
+3. Can use $log(y)$ as dependent variable
+  * $\rightarrow$ $\hat{\delta}$ is the percentage change in y due to the treatment
 
 ---
 class: inverse, center, middle
