@@ -381,7 +381,6 @@ class: font180
 |---------------------|--------|-------|
 | **Control**             | $\beta_0$      |  $\beta_0 + \beta_1$     |
 | **Treatment**           | $\beta_0 + \beta_2$       |   $\beta_0 + \beta_2 + \beta_1 + \delta$    |
-| **Treatment - Control** | $\beta_2$       |  $\beta_2 + \delta$     |
 
 
 ---
