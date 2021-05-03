@@ -13,6 +13,41 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE) 
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 6)
+library(tidyverse)
+#library(estimatr)
+library(magick)
+library(dagitty)
+library(ggthemes)
+library(ggdag)
+library(estimatr)
+library(Cairo)
+theme_metro <- function(x) {
+  theme_minimal() + 
+  theme(panel.background = element_rect(color = '#FAFAFA',fill='#FAFAFA'),
+        plot.background = element_rect(color = '#FAFAFA',fill='#FAFAFA'),
+        text = element_text(size = 16),
+        axis.title.x = element_text(hjust = 1),
+        axis.title.y = element_text(hjust = 1, angle = 0))
+}
+theme_void_metro <- function(x) {
+  theme_void() + 
+  theme(panel.background = element_rect(color = '#FAFAFA',fill='#FAFAFA'),
+        plot.background = element_rect(color = '#FAFAFA',fill='#FAFAFA'),
+        text = element_text(size = 16))
+}
+theme_metro_regtitle <- function(x) {
+  theme_minimal() + 
+  theme(panel.background = element_rect(color = '#FAFAFA',fill='#FAFAFA'),
+        plot.background = element_rect(color = '#FAFAFA',fill='#FAFAFA'),
+        text = element_text(size = 16))
+}
+```
+
+--- 
 class: font200
 
 # Learning Goals for this Week
@@ -152,7 +187,7 @@ $$
 $$
 
 * **Regression assumptions**: Unbiasedness, Variance of estimates 
-* "**Marketing Analytics assumptions**": Can an unbiased estimate be intrepreted causally
+* "**Causal Inference assumptions**": Can an unbiased estimate be intrepreted causally
   1. Valid counterfactual outcomes
   2. Conditional independence 
 
@@ -182,6 +217,443 @@ Both approaches: Compare changes over time between groups
 class: inverse, center, middle
 
 # Difference in Differences
+
+---
+# What is Difference in Differences?
+
+Want to answer the following question:
+
+.center[**What is the effect of some marketing intervention on those who were effected by it?**]
+
+* Call the intervention a **treatment**
+* The treatment takes one of two values:
+  * treatment = 1 if an observation is effected by the treatment 
+  * treatment = 0 if an observation is not effected by the treatment 
+* Observations are **treated at random**
+* The treatment effects an **outcome**:
+
+```{r, dev = 'CairoPNG', fig.height=4}
+dag <- dagify(
+              Outcome ~ Treatment,
+              coords=list(
+                x=c(Treatment = 1, Outcome = 3),
+                y=c(Treatment = 1, Outcome = 1)
+              )) %>% tidy_dagitty()
+
+ggdag_classic(dag,node_size=10) + 
+  theme_void_metro() + 
+  expand_limits(x=c(.5,3.5))
+```
+
+* **Goal**: Measure the effect of the treatment on the outcome 
+
+---
+# Estimator I: Before vs After?
+
+* We have data on observations **before** and **after** a treatment is introduced
+* Let $\bar{y}$ denote averages
+
+Proposed estimator I: **Before vs After for Treatment Group**
+
+$$
+\begin{aligned}
+\text{Treatment Effect} = \bar{y}_{\text{after}} - \bar{y}_{\text{before}}
+\end{aligned}
+$$
+
+This **will not work**. Why? 
+
+* Time: things change over time for reasons unrelated to treatment
+
+```{r, dev = 'CairoPNG', fig.height=3}
+dag <- dagify(Treatment ~ Time,
+              Outcome ~ Treatment + Time,
+              coords=list(
+                x=c(Treatment = 1, Time = 2, Outcome = 3),
+                y=c(Treatment = 1, Time = 2, Outcome = 1)
+              )) %>% tidy_dagitty()
+ggdag_classic(dag,node_size=10) + 
+  theme_void_metro() + 
+  expand_limits(x=c(.5,3.5))
+```
+
+---
+# Estimator I: Before vs After?
+
+Can't we control for time via (say) regression!?
+
+* **No**
+  * **treatment** occurence and **time** are perfectly correlated
+
+* Observation is either:
+  * Before and Untreated, or 
+  * After and Treated. 
+  
+* If control for time, you're comparing people with the same values of Time ...
+* ... who must also have the same values of Treatment! 
+
+$\implies$ Estimator won't work 
+
+---
+# Estimator II: Treatment vs Control
+
+* We have data on observations for **treated** and **untreated** after the treatment is introduced
+* Let $\bar{y}$ denote averages
+
+Proposed estimator II: **Treated vs Untreated in the After Period**
+
+$$
+\begin{aligned}
+\text{Treatment Effect} = \bar{y}_{\text{treated}} - \bar{y}_{\text{untreated}}
+\end{aligned}
+$$
+
+This **will not work**. Why? 
+
+* Treatment group might naturally vary from control group
+
+$\implies$ Difference between them could be due to:
+
+* The intervention, or 
+* Uncontrolled differences between the two groups
+
+$\implies$ Estimator won't work 
+
+---
+# Difference in Differences 
+
+* Previous estimators: one difference (one minus sign)
+  * They don't work
+
+Why? 
+
+* Estimator I: time differences 
+* Estimator II: group differences 
+
+What if we could combine ideas from both?
+
+$\implies$ that is what difference in differences does
+
+Cool! How?
+
+---
+# Difference in Differences: Notation 
+
+Assumption: The effect of time is constant between treated and control groups
+
+We need four averages:
+
+1. Control group, before intervention starts, $\bar{y}_{\text{before}}^{\text{control}} = \beta_0$
+2. Control group, after intervention starts, $\bar{y}_{\text{after}}^{\text{control}} = \beta_0 + \beta_1$
+3. Treatment group, before intervention starts, $\bar{y}_{\text{before}}^{\text{treatment}} = \beta_0 + \beta_2$
+4. Treatment group, after intervention starts, $\bar{y}_{\text{after}}^{\text{treatment}} = \beta_0 + \beta_2 + \beta_1 + \delta$
+
+$\implies$ the (average) treatment effect is $\delta$
+
+This looks easier in a table...
+
+---
+# The Difference in Difference Table
+
+|                     | Before | After |
+|---------------------|--------|-------|
+| **Control**             | $\beta_0$      |  $\beta_0 + \beta_1$     |
+| **Treatment**           | $\beta_0 + \beta_2$       |   $\beta_0 + \beta_2 + \beta_1 + \delta$    |
+| **Treatment - Control** | $\beta_2$       |  $\beta_2 + \delta$     |
+
+
+---
+# The Difference in Difference Table
+
+|                     | Before | After | After - Before |
+|---------------------|--------|-------|----------------|
+| **Control**             | $\beta_0$      |  $\beta_0 + \beta_1$     |    $\beta_1$            |
+| **Treatment**           | $\beta_0 + \beta_2$       |   $\beta_0 + \beta_2 + \beta_1 + \delta$    |  $\beta_1 + \delta$               |
+| **Treatment - Control** | |  |    $\delta$            |
+
+'Double Differencing' $\implies$ estimate $\delta$
+
+---
+# The Difference in Difference Table
+
+|                     | Before | After | After - Before |
+|---------------------|--------|-------|----------------|
+| **Control**             | $\beta_0$      |  $\beta_0 + \beta_1$     | |
+| **Treatment**           | $\beta_0 + \beta_2$       |   $\beta_0 + \beta_2 + \beta_1 + \delta$    | |
+| **Treatment - Control** | $\beta_2$       |  $\beta_2 + \delta$     |    $\delta$            |
+
+
+'Double Differencing' $\implies$ estimate $\delta$
+
+---
+# Difference in Difference Graphically
+
+```{r, echo = FALSE, out.height = '200%', fig.align = 'center'}
+# initialize plot and add control group
+plot(c(0, 1), c(6, 8), 
+     type = "p",
+     ylim = c(5, 12),
+     xlim = c(-0.3, 1.3),
+     main = "The Differences-in-Differences Estimator",
+     xlab = "Period",
+     ylab = "Y",
+     col = "steelblue",
+     pch = 20,
+     xaxt = "n",
+     yaxt = "n")
+
+axis(1, at = c(0, 1), labels = c("before", "after"))
+axis(2, at = c(0, 13))
+
+# add treatment group
+points(c(0, 1, 1), c(7, 9, 11), 
+       col = "darkred",
+       pch = 20)
+
+# add line segments
+lines(c(0, 1), c(7, 11), col = "darkred")
+lines(c(0, 1), c(6, 8), col = "steelblue")
+lines(c(0, 1), c(7, 9), col = "darkred", lty = 2)
+lines(c(1, 1), c(9, 11), col = "black", lty = 2, lwd = 2)
+
+# add annotations
+text(1, 10, expression(hat(delta)), cex = 0.8, pos = 4)
+text(0, 5.5, "s. mean control", cex = 0.8 , pos = 4)
+text(0, 6.8, "s. mean treatment", cex = 0.8 , pos = 4)
+text(1, 7.9, "s. mean control", cex = 0.8 , pos = 4)
+text(1, 11.1, "s. mean treatment", cex = 0.8 , pos = 4)
+```
+
+---
+# Difference in Difference in R 
+
+.center[**How can we do this in R?**]
+
+Let's first create some data:
+
+* years: 2002 - 2010
+* treatment for some observations in year 2007
+* treatment effect: 2
+
+```{r, echo = TRUE}
+# Create our data
+diddata <- tibble(year = sample(2002:2010,10000,replace=T),
+                  group = sample(c('TreatedGroup','UntreatedGroup'),10000,replace=T)) %>%
+  mutate(after = (year >= 2007)) %>%
+  #Only let the treatment (i.e. Treatment) be applied to the treated group
+  mutate(Treatment = after*(group=='TreatedGroup')) %>%
+  mutate(Y = 2*Treatment + .5*year + rnorm(10000)) %>%
+  select(-Treatment) %>%
+  mutate(treatment = case_when(
+    group == "TreatedGroup" ~ TRUE,
+    TRUE ~ FALSE
+    )
+  )
+```
+
+---
+# Difference in Difference in R 
+
+Now, compute averages by group and treatment status
+
+```{r, echo = TRUE}
+means <- 
+  diddata %>% 
+  group_by(group,after) %>% 
+  summarize(Y=mean(Y)) %>%
+  ungroup()
+
+print(means)
+```
+
+---
+# Difference in Difference in R 
+
+As a 'Table'
+
+```{r, echo = TRUE}
+did_table <- 
+  means %>%
+  pivot_wider(names_from = after, 
+                values_from = Y
+                )
+print(did_table)
+```
+
+---
+# Difference in Difference in R 
+
+Compute Treatment Effect, \hat{$\delta$}
+
+```{r, echo = TRUE}
+#Before-after difference for untreated, has time effect only
+bef_aft_untreated <- filter(means,group=='UntreatedGroup',after==1)$Y - 
+                     filter(means,group=='UntreatedGroup',after==0)$Y
+#Before-after for treated, has time and treatment effect
+bef_aft_treated <- filter(means,group=='TreatedGroup',after==1)$Y - 
+                   filter(means,group=='TreatedGroup',after==0)$Y
+#Difference-in-Difference! Take the Time + Treatment effect, and remove the Time effect
+did <- bef_aft_treated - bef_aft_untreated
+print(paste("Diff in Diff Estimate: ", did))
+```
+
+---
+# Is Our Estimate Causal
+
+We need two assumptions for Causality:
+
+1. A valid counterfactual outcome to compare treated group to 
+  * The control group gives us this
+
+2. Conditional Independence: treatment assignment "as good as random"
+  * We randomly assigned the treatment to some observations 
+
+$\implies$ Difference in difference can give is causal estimates of the average treatment effect!
+
+---
+class: inverse, center, middle
+
+# Difference in Differences as a Regression
+
+---
+# Difference in Differences as a Regression
+
+$$y_{it} = \beta_0 + \beta_1 After_t + \beta_2Treated_i + \delta After_t \times Treated_i + \varepsilon_{it}$$
+
+where:
+
+* $After_t$ = 1 in the period after treatment occurs, zero otherwise
+* $Treated_i$ = 1 if the individual is treated, zero otherwise
+
+---
+# Difference in Differences as a Regression
+
+$$y_{it} = \beta_0 + \beta_1 After_t + \beta_2Treated_i + \delta After_t \times Treated_i + \varepsilon_{it}$$
+
+- $\beta_0$ is the prediction when $Treated_i = 0$ and $After_t = 0$ 
+  - $\rightarrow$ the Untreated Before mean!
+- $\beta_1$ is the *difference between* Before and After for $Treated_i = 0$ 
+  - $\rightarrow$ Untreated (After - Before)
+- $\beta_2$ is the *difference between* Treated and Untreated for $After_t = 0$ 
+  - $\rightarrow$ Before (Treated - Untreated)
+- $\delta$ is *how much bigger the Before-After difference* is for $Treated_i = 1$ than for $Treated_i = 0$ 
+  - $\rightarrow$ (Treated After - Before) - (Untreated After - Before) = Treatment Effect!
+
+
+Let's see that in action with `R`
+
+---
+# Difference in Differences as a Regression
+
+```{r, echo = TRUE}
+reg_did <- lm(Y ~ after*treatment, data = diddata)
+
+tidy(reg_did, conf.int = TRUE)
+```
+
+---
+# Advantages of Regression Approach 
+
+1. Get standard error of the estimate
+  * Assess whether effect is statistically significant 
+  * *Should cluster standard errors*
+  * (see this week's reading for suggestions on how)
+2. Can add extra control variables into the regression 
+  * Either as 'usual' controls and/or as fixed effects
+  * Particularly useful for Natural / Quasi Experiments 
+  * (see this week's reading)
+
+---
+class: inverse, center, middle
+
+# Hidden Assumptions, Caveats, etc 
+
+---
+# Hidden-ish Assumption: Parallel Trends
+
+I briefly mentioned this in passing...
+
+.center[**We must assume that Time effects treatment and control groups equally**]
+
+* Otherwise controlling for time (i.e. `after`) won't work
+
+This is called the **parallel trends** assumption
+
+* Again, *if the Treatment hadn't happened to anyone*, the differences between the treatment and control would stay the same
+
+---
+# Checking for Parallel Trends
+
+Like many assumptions - its **untestable**
+
+* Though we can 'check' whether patterns in the data are suggestive its OK 
+* Heres on way: 
+  * Are *prior trends* are the same for Treated and Control groups
+  * (needs multiple pre-treatment periods) 
+  * Was the gap changing a lot during that period? If not, suggestive we're OK
+
+---
+# "As good as random" Redux
+
+Remember our two assumptions for causality:
+
+1. Valid counterfactual outcomes
+  * Control Group solves this one for us
+2. Conditional independence: nothing unobserved is causing selection into treament group 
+  * Tricker ... 
+  * Randomized Control Trial $\rightarrow$ You're more than likely gonna be OK
+  * Natural / Quasi Experiment - have you got a credible proxy for random assignment?
+    * Profession's thoughts: Large, visible, unexpected shocks
+
+---
+# Threats to Validity
+
+Internal Validity: statistical inference made about causal effects are valid for the considered population
+
+External Validity:  inferences and conclusion are valid for the study's population and can be generalized to other populations and settings
+
+---
+# Threats to Internal Validity
+
+* **Failure to Randomize**
+* **Failure to Follow Treatment Protocol**
+* **Attrition**
+* **Experimenter Demand Effects**
+* **Small Sample Sizes**
+
+---
+# Threats to External Validity
+
+* **Non-representative sample**
+* **Non-representative Marketing Intervention / Policy**
+* **General Equiilibrium Effects**
+
+---
+# A Warning!
+
+- DiD's popularity is relatively recent, so we're still learning a lot about it!
+  - Most relevant has to do with **staggered rollout DiD**
+- The regression version of DiD doesn't *necessarily* need to have treatment applied at *one* particular time
+  - Treatment could be gradually implemented over time
+- Nothing we've explicitly said would prevent us from using the regression DiD right!?
+  - Well... that's what we thought for a long time. 
+  - And you'll see many of published studies doing this. 
+  - BUT it turns out to actually **bias results by quite a lot**
+- There are more complex, newer estimators for staggered rollout case, 
+  - Too much for this class
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+# Recap 
+
+---
+# Acknowledgements
+
+
 
 ---
 # License & Citation
