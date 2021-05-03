@@ -47,7 +47,7 @@ theme_metro_regtitle <- function(x) {
 }
 ```
 
-class: font200
+class: font180
 # Learning Goals for this Week
 
 * Explain the the difference between correlation and causation
@@ -76,6 +76,7 @@ class: inverse, center, middle
 # Casuality
 
 ---
+class: font160
 # Why Causality?
 
 * Many questions we want answers to are **causal**
@@ -88,6 +89,7 @@ class: inverse, center, middle
   * But our comparative advantage should be causality
 
 ---
+class: font160
 # Why Causality as a Marketing Analyst?
 
 * Causality should be a marketing analyst's **comparative advantage**
@@ -101,6 +103,7 @@ class: inverse, center, middle
   * Your value to a future employer sky rockets if you can do this well
 
 ---
+class: font180
 # What is Causality?
 
 $X$ causes $Y$ if ...
@@ -109,6 +112,7 @@ $X$ causes $Y$ if ...
 * Then $Y$ changes as a result
 
 ---
+class: font160
 # Examples of Causal Relationships 
 
 Obvious:
@@ -124,6 +128,7 @@ Not so obvious:
 Remark: The **size** these effects are **much smaller** than you probably think
 
 ---
+class: font160
 # Examples of Non-Causal Relationships 
 
 
@@ -140,27 +145,29 @@ Some not so obvious:
 ---
 # Correlation is not Causation
 
-```{r, echo = FALSE, fig.align = "center"}
+```{r, echo = FALSE, out.width = '150%', fig.align = "center"}
 knitr::include_graphics("https://824vvlju22v1lbk2lqvut2u-wpengine.netdna-ssl.com/wp-content/uploads/2019/03/Causation-vs-Correlation-1.png")
 ```
 
 ---
+class: font160
 # Why Correlation is not Causation
 
 (Some) possible reasons **A** might not cause **B**:
 
 * **The opposite is true**
-  * **B** actually causes **A**
+  * B actually causes A
 * The two are correlated, but **there's more to it**: 
-  * **A** and **B** are correlated, but they're actually caused by **C**
+  * A and B are correlated, but they're actually caused by C
 * There's **another variable involved**: 
-  * **A** does cause **B** as long as **D** happens
+  * A does cause B as long as D happens
 * There is a **"chain" reaction**: 
-  * A causes **E**, which leads **E** to cause **B** 
-  * ... but you only saw that **A** causes **B** from your own eyes
+  * A causes E, which leads E to cause B 
+  * ... but you only saw that A causes B from your own eyes
 * It's due to **chance**
 
 ---
+class: font130
 # The Difficulty of Causal Inference
 
 **Can we tell when correlation $\implies$ causation?** 
@@ -181,6 +188,7 @@ Even then:
 * At *best* we'll estimate an **average causal effect**
 
 ---
+class: font160
 # Regression and Causality
 
 .center[Regression assumptions on their own] 
@@ -197,9 +205,10 @@ $$
 Note: Cannot test these assumptions 'statistically'
 
 ---
+class: font140
 # Experiments in Marketing Analytics
 
-Recent trend: use 'experiments' to estimate causal effects 
+Recent trend: use **'experiments' to estimate causal effects** 
 
 * Why? Clear counterfactual outcomes, reasonable to assume conditional independence
 
@@ -207,9 +216,9 @@ Experiments in Marketing!?
 
 Yes. Two kinds ...
 
-* Randomized Control Trial (RCT)
+* **Randomized Control Trial (RCT)**
   * Researcher randomly assigns observational units to treatment group, control group 
-* Natural Experiments / Quasi-Experiments
+* **Natural Experiments / Quasi-Experiments**
   * "Nature" divides population into treatment and control in a way that is "as good as random"
 
 Both approaches: Compare changes over time between groups
