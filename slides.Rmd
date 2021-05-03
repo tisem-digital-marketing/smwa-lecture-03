@@ -46,7 +46,6 @@ theme_metro_regtitle <- function(x) {
         text = element_text(size = 16))
 }
 ```
-
 --- 
 class: font200
 
@@ -650,10 +649,21 @@ class: inverse, center, middle
 ---
 # Recap 
 
+* Many marketing questions require causal answers 
+* Establishing causality is goes beyond finding (partial) correlations in data
+* RCT and Natural/Quasi Experiments introduce "as good as random" allocation to a treatment / marketing intervention
+* Can use Difference in Difference to estimate causal effects of above experiments
+
 ---
 # Acknowledgements
 
+Material in this set of slides borrows from the great work of others:
 
+* Nick C Huntington Klein's course on [Causality and Analytics](https://github.com/NickCH-K/introcausality)
+* Ed Rubin's [Econometrics III](https://github.com/edrubin/EC607S21)
+* Alan Spearot's class notes from [Econ 113](https://people.ucsc.edu/~aspearot/Econ113F14/Lecture%208%20F14.pdf) in Fall 2014
+* Hanck et al's [Econometrics with R](https://www.econometrics-with-r.org/index.html)
+* Goldfarb & Tucker's [Conducting Research with Quasi-Experiments: A Guide for Marketers](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2420920)
 
 ---
 # License & Citation
