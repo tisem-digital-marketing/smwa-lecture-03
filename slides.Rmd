@@ -46,12 +46,16 @@ theme_metro_regtitle <- function(x) {
         text = element_text(size = 16))
 }
 ```
---- 
-class: font200
 
+class: font200
 # Learning Goals for this Week
 
-TBD
+* Explain the the difference between correlation and causation
+* Understand the difference between regression assumptions and causal assumptions
+* Explain the terms Randomized Control Trial and Natural / Quasi Experiment
+* Define the term 'Difference in Differences'
+* Estimate treatment effects using Difference in Differences
+* Reflect on assumptions underlying causal claims from Difference in Difference estimates
 
 ---
 class: clear, middle, font150
